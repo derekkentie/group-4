@@ -2,18 +2,19 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+
 #showing data info
-train = pd.read_csv(r"C:\Users\20234364\group-4\data\train.csv")
-test = pd.read_csv(r"C:\Users\20234364\group-4\data\test.csv")
-protein_info = pd.read_csv(r"C:\Users\20234364\group-4\data\protein_info.csv")
+train = pd.read_csv("data/train.csv")
+test = pd.read_csv("data/test.csv")
+protein_info = pd.read_csv("data/protein_info.csv")
 print("train:", '\n', train[:10], '\n', train.describe(), '\n')
 print("test:", '\n',test[:10], '\n')
 print("protein_info", '\n', protein_info[:10], '\n')
 
 # Extracting data into numpy arrays
-train_array = np.array(pd.read_csv(r"C:\Users\20234364\group-4\data\train.csv", sep=',', header=None))
-test_array = np.array(pd.read_csv(r"C:\Users\20234364\group-4\data\test.csv", sep=',', header=None))
-protein_array = np.array(pd.read_csv(r"C:\Users\20234364\group-4\data\protein_info.csv", sep=',', header=None))
+train_array = np.array(pd.read_csv("data/train.csv", sep=',', header=None))
+test_array = np.array(pd.read_csv("data/test.csv", sep=',', header=None))
+protein_array = np.array(pd.read_csv("data/protein_info.csv", sep=',', header=None))
 
 #creating the different lists needed to store the data in
 affinity_score = []
