@@ -10,7 +10,6 @@ protein_info = pd.read_csv("data/protein_info.csv")
 print("train:", '\n', train[:10], '\n', train.describe(), '\n')
 print("test:", '\n',test[:10], '\n')
 print("protein_info", '\n', protein_info[:10], '\n')
-# unique count toevoegen om beter uit te zoeken of elk molecuul wel echt organisch is, en om accurater te tellen hoe lang elke keten is
 
 #extracting data into numpy arrays
 train_array = np.array(pd.read_csv("data/train.csv", sep=',', header=None))
@@ -24,6 +23,11 @@ error_sample = []
 train_molecule_length = []
 test_molecule_length = []
 protein_length = []
+
+train_molecule_uniques = []
+test_molecule_uniques = []
+unique_atoms_train = []
+unique_atoms_test = []
 
 #extracting the specific data and filtering out erroneous measurements
 for sample in range(1, len(train_array)):
@@ -46,17 +50,33 @@ for sample in range(1, len(train_array)):
         mol = Chem.MolFromSmiles(train_array[sample][0])
         atom_symbols = [atom.GetSymbol() for atom in mol.GetAtoms()]    
         train_molecule_length.append(len(atom_symbols))
+        train_molecule_uniques.append(np.unique(atom_symbols, return_index=True))
 
 #obtaining test molecule length using RDkit
 for sample in range(1, len(test_array)):
     mol = Chem.MolFromSmiles(test_array[sample][1])
     atom_symbols = [atom.GetSymbol() for atom in mol.GetAtoms()]    
     test_molecule_length.append(len(atom_symbols))
+    test_molecule_uniques.append(np.unique(atom_symbols, return_index=True))
 
 #obtaining protein length using RDkit
 for protein in range(1, len(protein_array)):
     protein_length.append(len(protein_array[protein][2]))
 
+#analyzing the unique atoms in each molecule for both the training and test set
+for unique in range(len(train_molecule_uniques)):
+    for atom in train_molecule_uniques[unique][0]:
+        if atom not in unique_atoms_train:
+            unique_atoms_train.append(str(atom))
+
+for unique in range(len(test_molecule_uniques)):
+    for atom in test_molecule_uniques[unique][0]:
+        if atom not in unique_atoms_test:
+            unique_atoms_test.append(str(atom))
+
+print("unique atoms in training set", np.sort(unique_atoms_train))
+print("unique atoms in test set", np.sort(unique_atoms_test))
+    
 #converting to numpy arrays
 affinity_score = np.array(affinity_score)
 index = np.array(index)
