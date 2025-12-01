@@ -10,6 +10,7 @@ protein_info = pd.read_csv("data/protein_info.csv")
 print("train:", '\n', train[:10], '\n', train.describe(), '\n')
 print("test:", '\n',test[:10], '\n')
 print("protein_info", '\n', protein_info[:10], '\n')
+# unique count toevoegen om beter uit te zoeken of elk molecuul wel echt organisch is, en om accurater te tellen hoe lang elke keten is
 
 # Extracting data into numpy arrays
 train_array = np.array(pd.read_csv("data/train.csv", sep=',', header=None))
