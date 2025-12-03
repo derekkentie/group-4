@@ -44,6 +44,8 @@ PLANNED IMPROVEMENTS ON THE CODE
     5. Universalizing the code for more data types
 
     6. Finding out how to append the descriptor names as header in X
+
+    7. Applying feature scaling
 """
 
 descriptor_names = [d[0] for d in Descriptors._descList]
