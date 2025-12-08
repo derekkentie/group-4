@@ -51,7 +51,7 @@ PLANNED IMPROVEMENTS ON THE CODE
 """
 
 
-def descriptor_extractor_csv_to_xlsx(file, batchpercentage = 1):
+def descriptor_extractor_csv_to_xlsx(file: str, batchpercentage: float = 1):
     """
     Returns an excel file with descriptors calculated for molecules.
 
@@ -60,7 +60,12 @@ def descriptor_extractor_csv_to_xlsx(file, batchpercentage = 1):
     after which it uses the same library to calculate every discriptor for
     every molecule.
     """
-
+    # check file extension
+    if not file.lower().endswith(".csv"):
+        raise ValueError(
+            f"Invalid file type: '{file}'. This function only accepts .csv files."
+        )
+    
     #making the list of functions for every descriptor calculation
     descriptor_functions = [d[1] for d in Descriptors._descList]
 
@@ -118,4 +123,4 @@ def descriptor_extractor_csv_to_xlsx(file, batchpercentage = 1):
     X = np.array(X, dtype=float)
     return np.savetxt("data/descriptors_extraction.xlsx", X, delimiter=",")
 
-descriptor_extractor_csv_to_xlsx("data/train.csv", batchpercentage=0.01 )
+descriptor_extractor_csv_to_xlsx("data/train.csv", batchpercentage=0.01)
