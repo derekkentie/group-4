@@ -1,7 +1,9 @@
 import numpy as np
 import pandas as pd
+import math
 from rdkit import Chem
 from rdkit.Chem import Descriptors
+
 
 """
 EXPLANATION OF THE CODE
@@ -48,6 +50,7 @@ PLANNED IMPROVEMENTS ON THE CODE
     7. Applying feature scaling
 """
 
+
 descriptor_names = [d[0] for d in Descriptors._descList]
 descriptor_functions = [d[1] for d in Descriptors._descList]
 
@@ -58,19 +61,22 @@ mols = [] #used to store the mol codes per SMILES represented molecule
 X =[] #used to store all descriptor values of every molecule to export to .xlsx file
 
 #specifying which file we will use
-for set in ["train", "test"]:
+for set in ["train"]:
     #checking of the sought after file is available
     try:
         data = pd.read_csv(f"data/{set}.csv", sep=',')
     except FileNotFoundError:
-        ("train.csv not found, skipping this file...")
+        (f"{set}.csv not found, skipping this file...")
         data = None
 
     #extracting the SMILES from the file specific "molecule_SMILES" column into mol code
-    for molecule in range(1, len(data)):       
-        mols.append(Chem.MolFromSmiles(np.array(data)[molecule][list(data).index("molecule_SMILES")])) 
+    a = 0.05 #variable for batch size to allow quick calculations for debugging
+    datasize = int(len(data)*a)
+    for molecule in range(1, datasize):       
+        mol = Chem.MolFromSmiles(np.array(data)[molecule][list(data).index("molecule_SMILES")])
+        mols.append(mol) 
         #keeping track of the descriptor calculation progress 
-        progress_calculation = int(100*len(mols)/len(data)) 
+        progress_calculation = int(100*len(mols)/datasize) 
         if progress_calculation > last_progress:
                 print(f"progress for {set}set SMILES extraction: {progress_calculation}%")
                 last_progress = progress_calculation
@@ -79,20 +85,17 @@ for set in ["train", "test"]:
     #combining every mol with each descriptor calculation function
     for mol in mols:
         for func in descriptor_functions:
-            descriptors_per_mol.append(func(mol)) #using each descriptor function on the current mol code to create a list of descriptor values
+            value = func(mol)
+            descriptors_per_mol.append(value) #using each descriptor function on the current mol code to create a list of descriptor values
         X.append(descriptors_per_mol) #appending the descriptors per molecule as row into X
         descriptors_per_mol = [] #clearing the descriptor list for to be filled for the next molecule
 
         #keeping track of the descriptor calculation progress 
-        progress_calculation = int(100*len(X)/len(data)) 
+        progress_calculation = int(100*len(X)/datasize) 
         if progress_calculation > last_progress:
             print(f"progress for {set}set descriptor calculation: {progress_calculation}%")
             last_progress = progress_calculation
-    X = np.array(X)
-    if X.shape[0] == (len(data)-1):
-        print("amount of molecules in X: ", X.shape[0], f" is equal to the amount of molecules in de {set}set: ", (len(data)-1))
-    if X.shape[1] == len(descriptor_functions):
-        print("amount of descriptors in X: ",X.shape[1], " is equal to the amount of descriptors from RDkit: ", len(descriptor_functions))
+    X = np.array(X, dtype=float)
     np.savetxt(f"data/{set}_with_all_descriptors.xlsx", X, delimiter=",")
     #resetting the starting conditions
     descriptors_per_mol = []
