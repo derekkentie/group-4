@@ -207,4 +207,4 @@ def find_missing_values(X):
     return descriptors_to_remove
 
 
-descriptor_extractor_csv_to_xlsx("data/train.csv", batchpercentage=0.01)
+descriptor_extractor_csv_to_xlsx("data/train.csv")
