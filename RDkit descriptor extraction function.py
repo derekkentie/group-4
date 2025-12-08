@@ -51,10 +51,14 @@ PLANNED IMPROVEMENTS ON THE CODE
 """
 
 
-def descriptor_extractor_csv(file, batchpercentage = 1):
+def descriptor_extractor_csv_to_xlsx(file, batchpercentage = 1):
     """
-    This function creates a csv file with all descriptors for 
-    each SMILES represented molecule in the input file.
+    Returns an excel file with descriptors calculated for molecules.
+
+    This function looks at the SMILES representation of a molecule in a csv file
+    and uses the RDkit library to convert these SMILES to mol representations,
+    after which it uses the same library to calculate every discriptor for
+    every molecule.
     """
 
     #making the list of functions for every descriptor calculation
@@ -84,7 +88,9 @@ def descriptor_extractor_csv(file, batchpercentage = 1):
     else:
         index_list = random.sample(range(1, len(data)), datasize)
 
-    #this function goes through every molecule (= row index), and proceeds to calculate the mol from the SMILES code that is in the "molecule_SMILES" column
+    #this function goes through every molecule (= row index), 
+    #and proceeds to calculate the mol from the SMILES code 
+    #that is in the "molecule_SMILES" column
     for molecule in index_list:       
         mol = Chem.MolFromSmiles(np.array(data)[molecule][list(data).index("molecule_SMILES")])
         mols.append(mol) 
@@ -112,4 +118,4 @@ def descriptor_extractor_csv(file, batchpercentage = 1):
     X = np.array(X, dtype=float)
     return np.savetxt("data/descriptors_extraction.xlsx", X, delimiter=",")
 
-descriptor_extractor_csv("data/train.csv", batchpercentage=0.01 )
+descriptor_extractor_csv_to_xlsx("data/train.csv", batchpercentage=0.01 )
