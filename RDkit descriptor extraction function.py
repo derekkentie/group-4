@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-import math
+import random
 from rdkit import Chem
 from rdkit.Chem import Descriptors
 
@@ -51,34 +51,47 @@ PLANNED IMPROVEMENTS ON THE CODE
 """
 
 
-descriptor_names = [d[0] for d in Descriptors._descList]
-descriptor_functions = [d[1] for d in Descriptors._descList]
+def descriptor_extractor_csv(file, batchpercentage = 1):
+    """
+    This function creates a csv file with all descriptors for 
+    each SMILES represented molecule in the input file.
+    """
 
-#creating starting conditions for variables
-descriptors_per_mol = [] #used to store descriptor values per molecule
-last_progress = -1 #used to keep track on SMILES extraction and descriptor calcuation
-mols = [] #used to store the mol codes per SMILES represented molecule
-X =[] #used to store all descriptor values of every molecule to export to .xlsx file
+    #making the list of functions for every descriptor calculation
+    descriptor_functions = [d[1] for d in Descriptors._descList]
 
-#specifying which file we will use
-for set in ["train"]:
-    #checking of the sought after file is available
+    #creating starting conditions for variables
+    descriptors_per_mol = [] #used to store descriptor values per molecule
+    last_progress = -1 #used to keep track on SMILES extraction and descriptor calcuation
+    mols = [] #used to store the mol codes per SMILES represented molecule
+    X =[] #used to store all descriptor values of every molecule to export to .xlsx file
+
+    #checking if the sought after file is available
     try:
-        data = pd.read_csv(f"data/{set}.csv", sep=',')
+        data = pd.read_csv(f"{file}", sep=',') #searches for local file location and reads it into data
     except FileNotFoundError:
-        (f"{set}.csv not found, skipping this file...")
+        (f"{file} not found, try again.")
         data = None
 
     #extracting the SMILES from the file specific "molecule_SMILES" column into mol code
-    a = 0.05 #variable for batch size to allow quick calculations for debugging
-    datasize = int(len(data)*a)
-    for molecule in range(1, datasize):       
+
+    #the following if-else statement is made to allow for quicker calculations when debugging
+    datasize = int(len(data)*batchpercentage)
+    print(datasize)
+    print(len(data))
+    if batchpercentage == 1:
+        index_list = range(1, datasize)
+    else:
+        index_list = random.sample(range(1, len(data)), datasize)
+
+    #this function goes through every molecule (= row index), and proceeds to calculate the mol from the SMILES code that is in the "molecule_SMILES" column
+    for molecule in index_list:       
         mol = Chem.MolFromSmiles(np.array(data)[molecule][list(data).index("molecule_SMILES")])
         mols.append(mol) 
         #keeping track of the descriptor calculation progress 
         progress_calculation = int(100*len(mols)/datasize) 
         if progress_calculation > last_progress:
-                print(f"progress for {set}set SMILES extraction: {progress_calculation}%")
+                print(f"progress of SMILES extraction: {progress_calculation}%")
                 last_progress = progress_calculation
     last_progress = -1
 
@@ -93,12 +106,10 @@ for set in ["train"]:
         #keeping track of the descriptor calculation progress 
         progress_calculation = int(100*len(X)/datasize) 
         if progress_calculation > last_progress:
-            print(f"progress for {set}set descriptor calculation: {progress_calculation}%")
+            print(f"progress of descriptor calculation: {progress_calculation}%")
             last_progress = progress_calculation
+
     X = np.array(X, dtype=float)
-    np.savetxt(f"data/{set}_with_all_descriptors.xlsx", X, delimiter=",")
-    #resetting the starting conditions
-    descriptors_per_mol = []
-    last_progress = -1
-    mols = []
-    X =[]
+    return np.savetxt("data/descriptors_extraction.xlsx", X, delimiter=",")
+
+descriptor_extractor_csv("data/train.csv", batchpercentage=0.01 )
