@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import random
+import statistics
 from rdkit import Chem
 from rdkit.Chem import Descriptors
 
@@ -67,6 +68,7 @@ def descriptor_extractor_csv_to_xlsx(file: str, batchpercentage: float = 1):
         )
     
     #making the list of functions for every descriptor calculation
+    descriptor_names = [d[0] for d in Descriptors._descList]
     descriptor_functions = [d[1] for d in Descriptors._descList]
 
     #creating starting conditions for variables
@@ -120,7 +122,89 @@ def descriptor_extractor_csv_to_xlsx(file: str, batchpercentage: float = 1):
             print(f"progress of descriptor calculation: {progress_calculation}%")
             last_progress = progress_calculation
 
+    #applying correlation check to further filter out descriptors
+    descriptors_to_remove = np.unique(find_low_std_descriptors(X) + find_highly_correlated_descriptors(X) + find_missing_values(X))
+
+    print(descriptors_to_remove, '\n',
+        "amount of descriptors:", len(descriptor_functions), '\n', 
+        "amount of descriptors to remove:", len(descriptors_to_remove), '\n',
+        "sum of descriptors left over:", (len(descriptor_functions)-len(descriptors_to_remove))
+        )
+
+
+    for descriptor in sorted(descriptors_to_remove, reverse=True):
+        X = [row[:descriptor] + row[descriptor+1:] for row in X]
+    print(np.array(X).shape)
+    
     X = np.array(X, dtype=float)
-    return np.savetxt("data/descriptors_extraction.xlsx", X, delimiter=",")
+
+    return np.savetxt("data/descriptors_extraction.xlsx", X, delimiter=",") #returning the calculated matrix in an excel file
+
+def find_highly_correlated_descriptors(X, threshold=0.9):
+    """
+    X = list of lists (rows x columns)
+    threshold = absolute correlation threshold for removing columns
+    """
+    descriptor_names = [d[0] for d in Descriptors._descList]
+    arr = np.array(X, dtype=float)
+    n_cols = arr.shape[1]
+    cols_to_remove = []
+
+    for i in range(n_cols):
+        for j in range(i):
+            # bereken correlatie tussen kolom i en kolom j
+            corr = np.corrcoef(arr[:, i], arr[:, j])[0, 1]
+
+            if abs(corr) > threshold:
+                cols_to_remove.append(i)
+                print(f"Removing {descriptor_names[i]} due to corr > {threshold} with {descriptor_names[j]}")
+                break   # stop met vergelijken zodra 1 hoge correlatie gevonden is
+
+    return cols_to_remove
+
+def find_low_std_descriptors(X, threshold=0.001):
+    descriptor_names = [d[0] for d in Descriptors._descList]
+    arr = np.array(X, dtype=float)
+    n_rows, n_cols = arr.shape
+    #filtering the descriptors based on functionality
+    values_per_descriptor = []
+    descriptors_to_remove = []
+
+    for descriptor in range(n_cols):
+        for value in range(n_rows):
+            values_per_descriptor.append(X[value][descriptor])
+
+        #filtering out the descriptors that are constant or have a stdev < threshold
+        if statistics.stdev(values_per_descriptor) < threshold: 
+            descriptors_to_remove.append(descriptor)
+            print(f"Removing {descriptor_names[descriptor]} due to too low standard deviation")
+        values_per_descriptor=[]
+    return descriptors_to_remove
+
+def find_missing_values(X):
+    descriptor_names = [d[0] for d in Descriptors._descList]
+    arr = np.array(X, dtype=float)
+    n_rows, n_cols = arr.shape
+    values_per_descriptor = []
+    descriptors_to_remove = []
+
+    for descriptor in range(n_cols):
+        for value in range(n_rows):
+            values_per_descriptor.append(X[value][descriptor])
+
+        uniques = np.unique(values_per_descriptor)
+        if 0 in uniques: 
+             # 1. Boolean check: exact set {0,1}
+            if set(uniques.tolist()) == {0, 1}:
+                continue  # boolean → toegestaan
+            # 2. Integer-only check
+            elif all(float(u).is_integer() for u in uniques):
+                continue  # integer descriptor → toegestaan
+            else:
+                descriptors_to_remove.append(descriptor)
+                print(f"Removing {descriptor_names[descriptor]} due to missing value(s)")
+        values_per_descriptor=[]
+    return descriptors_to_remove
+
 
 descriptor_extractor_csv_to_xlsx("data/train.csv", batchpercentage=0.01)
