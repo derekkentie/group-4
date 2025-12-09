@@ -4,6 +4,7 @@ import random
 import statistics
 from rdkit import Chem
 from rdkit.Chem import Descriptors
+from sklearn.preprocessing import StandardScaler
 
 
 """
@@ -135,8 +136,9 @@ def descriptor_extractor_csv_to_xlsx(file: str, batchpercentage: float = 1):
     for descriptor in sorted(descriptors_to_remove, reverse=True):
         X = [row[:descriptor] + row[descriptor+1:] for row in X]
     print(np.array(X).shape)
-    
+    X = standard_scaling(X)
     X = np.array(X, dtype=float)
+    print(X.shape)
 
     return np.savetxt("data/descriptors_extraction.xlsx", X, delimiter=",") #returning the calculated matrix in an excel file
 
@@ -206,5 +208,41 @@ def find_missing_values(X):
         values_per_descriptor=[]
     return descriptors_to_remove
 
+def standard_scaling(X):
+    arr = np.array(X, dtype=float)
+    n_rows, n_cols = arr.shape
+    scaler = StandardScaler()
 
-descriptor_extractor_csv_to_xlsx("data/train.csv")
+    for descriptor in range(n_cols):
+        # haal kolom op
+        column = arr[:, descriptor].reshape(-1, 1)
+
+        # scale kolom
+        scaled_column = scaler.fit_transform(column).flatten()
+
+        # schrijf terug naar matrix
+        for i in range(n_rows):
+            arr[i, descriptor] = scaled_column[i]
+
+    return arr.tolist()
+
+def minmax_scaling(X):
+    arr = np.array(X, dtype=float)
+    n_rows, n_cols = arr.shape
+
+    for descriptor in range(n_cols):
+        # haal kolom
+        column = arr[:, descriptor]
+
+        col_min = column.min()
+        col_max = column.max()
+
+        scaled_column = (column - col_min) / (col_max - col_min)
+
+        # schrijf schaalwaarden terug naar matrix
+        for i in range(n_rows):
+            arr[i, descriptor] = scaled_column[i]
+
+    return arr.tolist()
+
+descriptor_extractor_csv_to_xlsx("data/train.csv", batchpercentage=0.01)
