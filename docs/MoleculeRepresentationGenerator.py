@@ -29,7 +29,7 @@ class MoleculeRepresentationGenerator:
         returns data from the input file as pandas DataFrame
         and the index_list based on the datasize.
         """
-
+        print("data loader function activated")
         #check file extension
         if not file.lower().endswith(".csv"):
             raise ValueError(
@@ -41,18 +41,26 @@ class MoleculeRepresentationGenerator:
             data = pd.read_csv(f"{file}", sep=',') #searches for local file location and reads it into data
         except FileNotFoundError:
             (f"{file} not found, try again.")
-            data = None
 
         #the following if-else statement is made to allow for quicker calculations when debugging
         self.datasize = int(len(data)*self.batch_fraction)
         if self.batch_fraction == 1:
             index_list = range(1, self.datasize)
-        else:
+        elif 0 < self.batch_fraction < 1:
             index_list = random.sample(range(1, len(data)), self.datasize)
+        elif self.batch_fraction < 0:
+            raise ValueError(
+                "The batch fraction can not be negative, choose within range 0 to 1"
+            )
+        elif self.batch_fraction > 1:
+            raise ValueError(
+                "The batch fraction can not be greater than 1, choose within ragne 0 to 1"
+            )
 
         return index_list, data
     
     def mols_list(self, index_list, data):
+        print("mol extraction function activated")
         mols = []
         for molecule in index_list:
             smiles = np.array(data)[molecule][list(data).index("molecule_SMILES")]
@@ -62,6 +70,7 @@ class MoleculeRepresentationGenerator:
         return mols
 
     def get_rep_dict(self, file):
+        print("representation dictionary function activated")
         index_list, data = self.data_loader(file)
         mols = self.mols_list(index_list, data)
         rep_dict = {}
@@ -89,6 +98,7 @@ class MoleculeRepresentationGenerator:
         return rep_dict
     
     def pickle_export(self, rep_dict):
+        print("pickle export function activated")
         if self.pca >0:
             with open(f"data/molecule_{self.rep_type}_representation_with_pca_{self.pca}.pkl", "wb") as export_file:
                 pickle.dump(rep_dict, export_file)
@@ -103,6 +113,7 @@ class MoleculeRepresentationGenerator:
     # REPRESENTATION FUNCTIONS
 
     def descriptor_rep(self, mols):
+        print("descriptor function activated")
         descriptors_per_mol = []
         rep = []
 
@@ -112,7 +123,7 @@ class MoleculeRepresentationGenerator:
                 value = func(mol)
                 descriptors_per_mol.append(value) #using each descriptor function on the current mol code to create a list of descriptor values
             rep.append(descriptors_per_mol) #appending the descriptors per molecule as row into X
-            descriptors_per_mol = [] #clearing the descriptor list for to be filled for the next molecule
+            descriptors_per_mol = [] #clearing the descriptor list for it to be filled for the next molecule
             self.progress_tracker(rep, "descriptor")
         
         descriptors_to_remove = np.unique(self.find_low_std_descriptors(rep) + self.find_highly_correlated_descriptors(rep) + self.find_missing_values(rep))
@@ -197,6 +208,7 @@ class MoleculeRepresentationGenerator:
         return rep_reduced
     
     def combined_rep(self, mols):
+        print("combined function activated")
         descriptors = self.descriptor_rep(mols)
         fingerprints = self.fingerpint_rep(mols)
         rep = []
@@ -217,6 +229,7 @@ class MoleculeRepresentationGenerator:
         X = list of lists (rows x columns)
         threshold = absolute correlation threshold for removing columns
         """
+        print("correlation-filter function activated")
         arr = np.array(X, dtype=float)
         n_cols = arr.shape[1]
         cols_to_remove = []
@@ -234,6 +247,7 @@ class MoleculeRepresentationGenerator:
         return cols_to_remove
 
     def find_low_std_descriptors(self, X, threshold=0.001):
+        print("low-stdev function activated")
         arr = np.array(X, dtype=float)
         n_rows, n_cols = arr.shape
         #filtering the descriptors based on functionality
@@ -252,6 +266,7 @@ class MoleculeRepresentationGenerator:
         return descriptors_to_remove
 
     def find_missing_values(self, X):
+        print("missing value function activated")
         arr = np.array(X, dtype=float)
         n_rows, n_cols = arr.shape
         values_per_descriptor = []
@@ -276,6 +291,7 @@ class MoleculeRepresentationGenerator:
         return descriptors_to_remove
 
     def standard_scaling(self, X):
+        print("standard scaling function activated")
         arr = np.array(X, dtype=float)
         n_rows, n_cols = arr.shape
         scaler = StandardScaler()
@@ -294,6 +310,7 @@ class MoleculeRepresentationGenerator:
         return arr.tolist()
                 
     def minmax_scaling(self, X):
+        print("minmax scaling function activated")
         arr = np.array(X, dtype=float)
         n_rows, n_cols = arr.shape
 
@@ -313,6 +330,7 @@ class MoleculeRepresentationGenerator:
         return arr.tolist()
     
     def find_constant_values(self, X):
+        print("constant value function activated")
         arr = np.array(X, dtype= float)
         n_col = arr.shape[1]
         constant_fingerprints = []
@@ -329,6 +347,7 @@ class MoleculeRepresentationGenerator:
         return arr.tolist()
 
     def PCA(self, X):
+        print("PCA function activated")
         pca = PCA(n_components = self.pca)
         X_pca = pca.fit_transform(X)
         print(f"Principal Component Analysis complete with {self.pca} components.")
@@ -343,6 +362,6 @@ class MoleculeRepresentationGenerator:
         if len(X) == self.datasize:
             self.last_progress = -1
         
-exporter = MoleculeRepresentationGenerator(pca= 3, batch_fraction=0.01)
+exporter = MoleculeRepresentationGenerator()
 rep_dict = exporter.get_rep_dict("data/train.csv")
 exporter.pickle_export(rep_dict)
