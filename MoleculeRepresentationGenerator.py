@@ -128,12 +128,14 @@ class MoleculeRepresentationGenerator:
 
         #applying the chosen scale type
         if self.scale_type == 'Standard':
-            rep = self.standard_scaling(rep_reduced)
+            rep_reduced = self.standard_scaling(rep_reduced)
         elif self.scale_type == 'minmax':
-            rep = self.minmax_scaling(rep_reduced)
+            rep_reduced = self.minmax_scaling(rep_reduced)
+        elif self.scale_type == 'None':
+            rep_reduced = rep_reduced
         else:
             TypeError(
-            f"invalid scale type: {self.scale_type}. Choose between 'standard' or 'minmax'."                
+            f"invalid scale type: {self.scale_type}. Choose between 'standard', 'minmax' or 'None'."                
             )
         
 
