@@ -361,7 +361,7 @@ class MoleculeRepresentationGenerator:
             self.last_progress = progress_calculation
         if len(X) == self.datasize:
             self.last_progress = -1
-        
-exporter = MoleculeRepresentationGenerator()
-rep_dict = exporter.get_rep_dict("data/train.csv")
-exporter.pickle_export(rep_dict)
+
+mol_feature_model = MoleculeRepresentationGenerator(scale_type= 'None')
+molecule_features = mol_feature_model.get_rep_dict('data/train.csv')
+mol_feature_model.pickle_export(molecule_features)
