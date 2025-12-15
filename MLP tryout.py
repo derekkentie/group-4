@@ -13,7 +13,7 @@ from rdkit.Chem.rdFingerprintGenerator import GetMorganGenerator
 from rdkit.DataStructs.cDataStructs import ConvertToNumpyArray
 
 
-molecule_features = pickle.load(open(r"C:\Users\20234364\group-4\data\molecule_combined_representation_with_pca_8.pkl", 'rb'))
+molecule_features = pickle.load(open(r"C:\Users\20234364\group-4\data\molecule_combined_representation.pkl", 'rb'))
 protein_features = pickle.load(open("docs\Sep's picklebestanden\dict ID to feature matrix",'rb'))
 #chat gegeven code hieronder
 df = pd.read_csv("data/train.csv")
@@ -40,7 +40,7 @@ for _, row in df.iterrows():
     if protein not in protein_vectors: 
         continue
 
-    combined = molecule_features[smiles].tolist() + protein_vectors[protein]
+    combined = molecule_features[smiles] + protein_vectors[protein]
     X.append(combined)
     y.append(row["affinity_score"])
 
@@ -67,7 +67,7 @@ X_test_pca  = pca.transform(X_test_scaled)
 
 model = MLPRegressor(
     hidden_layer_sizes=( 16, 16, 8),
-    activation='logistic',
+    activation='tanh',
     learning_rate='adaptive',
     max_iter=1000,
     random_state=42
