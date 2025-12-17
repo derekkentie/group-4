@@ -6,10 +6,11 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPRegressor
+from sklearn.ensemble import RandomForestRegressor
 
 #selecting the preferred dicitionaries
-molecule_features_dict = pickle.load(open("docs\mol representatie picklebestanden\molecule_combined_representation.pkl",'rb'))
-protein_features_dict = pickle.load(open("docs\Sep's picklebestanden\dict ID to physicochemical 2 + PAM250 vector padded with nans", 'rb'))
+molecule_features_dict = pickle.load(open("docs\mol representatie picklebestanden\molecule_descriptor_representation.pkl",'rb'))
+protein_features_dict = pickle.load(open("docs\Sep's picklebestanden\dict ID to featurevector in one-hot padded with nans", 'rb'))
 print("dictionaries loaded")
 #loading the training set
 train_df = pd.read_csv("data/train.csv")
@@ -21,7 +22,7 @@ y = []
 for _, row in train_df.iterrows():
     smiles = row["molecule_SMILES"]
     protein = row["UniProt_ID"]
-
+    affinity_score = row["affinity_score"]
     #quick check if all elements are available
     if smiles not in molecule_features_dict: 
         raise FileNotFoundError(
@@ -41,7 +42,7 @@ for _, row in train_df.iterrows():
 
     #data seperation
     X.append(combined)
-    y.append(row["affinity_score"])
+    y.append(affinity_score)
 
 X = np.array(X, dtype=float)
 y = np.array(y, dtype=float)
@@ -139,6 +140,8 @@ You can find a list of all estimators that handle NaN values
 at the following page: 
 https://scikit-learn.org/stable/modules/impute.html#estimators-that-handle-nan-values
 """
+
+"""
 model = MLPRegressor(
     hidden_layer_sizes=( 16, 8),
     activation='logistic',
@@ -150,5 +153,11 @@ model = MLPRegressor(
 model.fit(X_train, y_train)
 print("model fitting complete")
 
+
+"""
+model = RandomForestRegressor(
+    criterion= 'absolute_error'
+)
+model.fit(X_train, y_train)
 print("Train score:", model.score(X_train, y_train))
 print("Test score:", model.score(X_test, y_test))
