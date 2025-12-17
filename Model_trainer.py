@@ -13,13 +13,15 @@ It does so by first creating a dictionary coupling every aminoacid to a subseque
 make sure you keep the dictionaries you need for the model. If you want to use a picklefile directly for your model, feel free to use ctrl + / to silence the added code."""
 
 
-ID_to_protein = pickle.load(open('dict ID to sequence','rb'))
-aa_to_featurevec_unfilter = pickle.load(open('dict aminoacid to property vector 2','rb')) 
+ID_to_protein = pickle.load(open(r"C:\Users\20243625\OneDrive - TU Eindhoven\Desktop\group-4\docs\Sep's picklebestanden\dict ID to sequence",'rb'))
+aa_to_featurevec_unfilter = pickle.load(open(r"C:\Users\20243625\OneDrive - TU Eindhoven\Desktop\group-4\docs\Sep's picklebestanden\dict aminoacid to property vector 2",'rb')) 
 
-dict_to_concatenate = pickle.load(open("C:\Users\20243625\OneDrive - TU Eindhoven\Desktop\group-4\docs\Sep's picklebestanden\dict aa to PAM250 substitution vector (alfabetically)",'rb')) 
+dict_to_concatenate = pickle.load(open(r"C:\Users\20243625\OneDrive - TU Eindhoven\Desktop\group-4\docs\Sep's picklebestanden\dict aa to PAM250 substitution vector (alfabetically)",'rb')) 
 #Above PAM250 is selected, can be exchanged with BLOSUM62, make sure it is a dictionary coupling aminoacids to vectors, not ID's to vectors, can be set to None if you only want to use physicochemical properties
 
+
 features_used = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24] #contains indices of physicochemical properties kept, feel free to experiment by changing what it contains, do not exceed 24 as there are no properties with a higher index
+#FYI: these are the highly correlating pairs (abs(R) > 0.9): [(3, 2), (5, 2), (5, 3), (17, 15), (21, 2), (21, 3)]
 aa_to_featurevec_filtered = dict()
 
 for aa in aa_to_featurevec_unfilter.keys(): #creating dictionary coupling aminoacids to featurevectors
