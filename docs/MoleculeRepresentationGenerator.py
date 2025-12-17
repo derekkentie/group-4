@@ -77,7 +77,7 @@ class MoleculeRepresentationGenerator:
 
         return rep_dict
     
-    def pickle_export(self, rep_dict):
+    def pickle_export(self, rep_dict, dataset = 'train'):
         print("pickle export function activated")
         scale_title=''
         pca_title = ''
@@ -85,7 +85,7 @@ class MoleculeRepresentationGenerator:
             scale_title = f'_{self.scale_type}_scaling'
         if self.pca >0:
             pca_title = f'_{self.pca}_principal_components'
-        with open(f"docs/mol representatie picklebestanden/molecule_{self.rep_type}_representation{scale_title}{pca_title}.pkl", "wb") as export_file:
+        with open(f"docs/mol representatie picklebestanden/{dataset}_molecule_{self.rep_type}_representation{scale_title}{pca_title}.pkl", "wb") as export_file:
                 pickle.dump(rep_dict, export_file)
                 export_file.close()      
 
@@ -349,7 +349,7 @@ class MoleculeRepresentationGenerator:
         #keeping track of the descriptor calculation progress 
         progress_calculation = int(100*len(X)/self.datasize) 
         if progress_calculation > self.last_progress:
-            #print(f"progress of {function} calculation: {progress_calculation}%")
+            print(f"progress of {function} calculation: {progress_calculation}%")
             self.last_progress = progress_calculation
         if len(X) == self.datasize:
             self.last_progress = -1
@@ -359,4 +359,4 @@ class MoleculeRepresentationGenerator:
     
 mol_feature_model = MoleculeRepresentationGenerator(rep_type= 'descriptor',scale_type= 'None')
 molecule_features = mol_feature_model.get_rep_dict('data/train.csv')
-mol_feature_model.pickle_export(molecule_features)
+mol_feature_model.pickle_export(molecule_features, dataset= 'train')
