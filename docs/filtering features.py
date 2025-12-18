@@ -15,7 +15,7 @@ for aa in aa_to_featurevec_unfilter.keys():
         features_kept.append(value[feature])
     aa_to_featurevec_filtered[aa] = features_kept
    
-print(aa_to_featurevec_filtered['C'])
+# print(aa_to_featurevec_filtered['C'])
 ID_to_featurevec = dict()
 ID_to_feature_mat = dict()
 ID_codes = ID_to_protein.keys()
