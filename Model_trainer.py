@@ -51,30 +51,30 @@ for _, row in train_df.iterrows():
 X = np.array(X, dtype=float)
 y = np.array(y, dtype=float)
 
-X_predict = []
-for _, row in test_df.iterrows():
-    smiles = row["molecule_SMILES"]
-    protein = row["UniProt_ID"]
-    #quick check if all elements are available
-    if smiles not in molecule_features_dict_test: 
-        raise FileNotFoundError(
-            f"The following SMILES exists in the testset but not in the molecule-features dictionary: {smiles}"
-        )
-    if protein not in protein_features_dict: 
-        raise FileNotFoundError(
-            f"The following Uniprot_ID exists in the testset but not in the protein-features dictionary: {protein}"
-        )
+#X_predict = []
+# for _, row in test_df.iterrows():
+#     smiles = row["molecule_SMILES"]
+#     protein = row["UniProt_ID"]
+#     #quick check if all elements are available
+#     if smiles not in molecule_features_dict_test: 
+#         raise FileNotFoundError(
+#             f"The following SMILES exists in the testset but not in the molecule-features dictionary: {smiles}"
+#         )
+#     if protein not in protein_features_dict: 
+#         raise FileNotFoundError(
+#             f"The following Uniprot_ID exists in the testset but not in the protein-features dictionary: {protein}"
+#         )
 
-    #feature concatenation
-    if isinstance(molecule_features_dict_test[smiles], np.ndarray):
-        molecule_features_dict_test[smiles] = molecule_features_dict_test[smiles].tolist()
-    if isinstance(protein_features_dict[protein], np.ndarray):
-        protein_features_dict[protein] = protein_features_dict[protein].tolist()
-    combined = molecule_features_dict_test[smiles] + protein_features_dict[protein]
+#     #feature concatenation
+#     if isinstance(molecule_features_dict_test[smiles], np.ndarray):
+#         molecule_features_dict_test[smiles] = molecule_features_dict_test[smiles].tolist()
+#     if isinstance(protein_features_dict[protein], np.ndarray):
+#         protein_features_dict[protein] = protein_features_dict[protein].tolist()
+#     combined = molecule_features_dict_test[smiles] + protein_features_dict[protein]
 
-    #data seperation
-    X_predict.append(combined)
-X_predict = np.array(X_predict, dtype=float)
+#     #data seperation
+#     X_predict.append(combined)
+# X_predict = np.array(X_predict, dtype=float)
 print("feature concatenation complete")
 
 #splitting the data in training and test sets
@@ -100,7 +100,7 @@ scaler = MinMaxScaler()
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 X = scaler.fit_transform(X)
-X_predict = scaler.transform(X_predict)
+#X_predict = scaler.transform(X_predict)
 print("minmax scaling complete")
 
 #apply PCA if preferred
@@ -149,19 +149,25 @@ model = MLPRegressor(
     random_state=42
 )
 """
-"""
-model = RandomForestRegressor(
-    criterion= 'absolute_error'
-)
-"""
+
+# model = RandomForestRegressor(
+#     criterion= 'absolute_error'
+# )
+
+
 model = HistGradientBoostingRegressor(
     loss= "absolute_error",
     learning_rate= 0.1,
     max_iter= 100
 )
-model.fit(X, y)
+
+model.fit(X_train, y_train)
 print("Train score:", model.score(X_train, y_train))
 print("Test score:", model.score(X_test, y_test))
+
+#FOR MAKING THE ACTUAL PREDICTIONS
+"""
+model.fit(X, y)
 y_predict = model.predict(X_predict)
 if len(y_predict) != 34626:
     raise IndexError(
@@ -173,3 +179,4 @@ submission = pd.DataFrame({
     "affinity_score": y_predict
 })
 submission.to_csv("data/submission1.csv", index=False)
+"""
