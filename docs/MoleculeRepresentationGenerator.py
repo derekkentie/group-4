@@ -3,6 +3,7 @@ import pandas as pd
 import pickle
 import random
 import statistics
+from typing import Literal
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from rdkit import Chem
@@ -11,11 +12,14 @@ from rdkit.Chem.rdFingerprintGenerator import GetMorganGenerator
 from rdkit.DataStructs.cDataStructs import ConvertToNumpyArray
 
 class MoleculeRepresentationGenerator:
-    def __init__(self, rep_type = 'combined', scale_type = 'standard', pca = 0, batch_fraction = 1):
+    def __init__(self, 
+                 rep_type: Literal['combined', 'descriptor', 'fingerprint'] = "combined", 
+                 scale_type: Literal['standard', 'minmax', 'None'] = 'standard', 
+                 pca = 0, 
+                ):
         self.rep_type = rep_type
         self.scale_type = scale_type
         self.pca = pca
-        self.batch_fraction = batch_fraction
         self.last_progress = -1
 
         self.descriptor_names = [d[0] for d in Descriptors._descList]
@@ -42,28 +46,12 @@ class MoleculeRepresentationGenerator:
         except FileNotFoundError:
             (f"{file} not found, try again.")
 
-        #the following if-else statement is made to allow for quicker calculations when debugging
-        self.datasize = int(len(data)*self.batch_fraction)
-        if self.batch_fraction == 1:
-            index_list = range(1, self.datasize)
-        elif 0 < self.batch_fraction < 1:
-            index_list = random.sample(range(1, len(data)), self.datasize)
-        elif self.batch_fraction < 0:
-            raise ValueError(
-                "The batch fraction can not be negative, choose within range 0 to 1"
-            )
-        elif self.batch_fraction > 1:
-            raise ValueError(
-                "The batch fraction can not be greater than 1, choose within ragne 0 to 1"
-            )
-
-        return index_list, data
+        return data
     
-    def mols_list(self, index_list, data):
+    def smiles_to_mols(self, unique_smiles):
         print("mol extraction function activated")
         mols = []
-        for molecule in index_list:
-            smiles = np.array(data)[molecule][list(data).index("molecule_SMILES")]
+        for smiles in unique_smiles:
             mol = Chem.MolFromSmiles(smiles)
             mols.append(mol)
             self.progress_tracker(mols, "mols")
@@ -71,11 +59,39 @@ class MoleculeRepresentationGenerator:
 
     def get_rep_dict(self, file):
         print("representation dictionary function activated")
-        index_list, data = self.data_loader(file)
-        mols = self.mols_list(index_list, data)
+        data = self.data_loader(file)
+        unique_smiles = self.unique_smiles(data)
+        self.datasize = len(unique_smiles)
+        mols = self.smiles_to_mols(unique_smiles)
         rep_dict = {}
 
         #applying the chosen representation function
+        rep = self.rep_type_selector(mols)
+        #applying PCA if prefered
+        if self.pca > 0:
+            rep = self.PCA(rep)
+
+        for i in range(len(unique_smiles)):
+            smile = unique_smiles[i]
+            rep_dict[smile] = rep[i]
+
+        return rep_dict
+    
+    def pickle_export(self, rep_dict, dataset = 'train'):
+        print("pickle export function activated")
+        scale_title=''
+        pca_title = ''
+        if self.scale_type.lower() != 'none':
+            scale_title = f'_{self.scale_type}_scaling'
+        if self.pca >0:
+            pca_title = f'_{self.pca}_principal_components'
+        with open(f"docs/mol representatie picklebestanden/{dataset}_molecule_{self.rep_type}_representation{scale_title}{pca_title}.pkl", "wb") as export_file:
+                pickle.dump(rep_dict, export_file)
+                export_file.close()      
+
+
+    # REPRESENTATION FUNCTIONS
+    def rep_type_selector(self, mols):
         if self.rep_type == 'descriptor':
             rep = self.descriptor_rep(mols)
         elif self.rep_type == 'fingerprint':
@@ -86,31 +102,7 @@ class MoleculeRepresentationGenerator:
             TypeError(
             f"invalid representation type: {self.rep_type}. Choose between 'descriptor', 'fingerprint' or 'combined'."                
             )
-
-        #applying PCA if prefered
-        if self.pca > 0:
-            rep = self.PCA(rep)
-
-        for i in range(len(rep)):
-            smiles = data.iloc[i]["molecule_SMILES"]
-            rep_dict[smiles] = rep[i]
-        
-        return rep_dict
-    
-    def pickle_export(self, rep_dict):
-        print("pickle export function activated")
-        if self.pca >0:
-            with open(f"data/molecule_{self.rep_type}_representation_with_pca_{self.pca}.pkl", "wb") as export_file:
-                pickle.dump(rep_dict, export_file)
-                export_file.close()
-        else:
-            with open(f"data/molecule_{self.rep_type}_representation.pkl", "wb") as export_file:
-                pickle.dump(rep_dict, export_file)
-                export_file.close()
-        
-    
-
-    # REPRESENTATION FUNCTIONS
+        return rep
 
     def descriptor_rep(self, mols):
         print("descriptor function activated")
@@ -138,11 +130,11 @@ class MoleculeRepresentationGenerator:
             rep_reduced.append(rep.iloc[i].tolist())
 
         #applying the chosen scale type
-        if self.scale_type == 'Standard':
+        if self.scale_type.lower() == 'Standard':
             rep_reduced = self.standard_scaling(rep_reduced)
-        elif self.scale_type == 'minmax':
+        elif self.scale_type.lower() == 'minmax':
             rep_reduced = self.minmax_scaling(rep_reduced)
-        elif self.scale_type == 'None':
+        elif self.scale_type.lower() == 'none':
             rep_reduced = rep_reduced
         else:
             TypeError(
@@ -156,8 +148,8 @@ class MoleculeRepresentationGenerator:
                 "amount of descriptors left over:", (len(self.descriptor_functions)-len(descriptors_to_remove))
              )
 
-        print("Descriptor representation type:", type(rep_reduced), '\n',
-            "Descriptor representation shape:", np.array(rep_reduced).shape)
+        print("Descriptor representation shape:", np.array(rep_reduced).shape)
+
         return rep_reduced
     
     def fingerpint_rep(self, mols):
@@ -362,6 +354,9 @@ class MoleculeRepresentationGenerator:
         if len(X) == self.datasize:
             self.last_progress = -1
 
-mol_feature_model = MoleculeRepresentationGenerator(scale_type= 'None')
+    def unique_smiles(self, data):
+        return data["molecule_SMILES"].unique()
+    
+mol_feature_model = MoleculeRepresentationGenerator(rep_type= 'descriptor',scale_type= 'None')
 molecule_features = mol_feature_model.get_rep_dict('data/train.csv')
-mol_feature_model.pickle_export(molecule_features)
+mol_feature_model.pickle_export(molecule_features, dataset= 'train')
