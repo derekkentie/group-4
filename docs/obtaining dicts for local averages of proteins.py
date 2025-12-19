@@ -4,6 +4,7 @@ import pickle
 #these two lines can be changed to experiment with different features and hyperparameters
 ID_to_mat_old = pickle.load(open(r"C:\Users\20243625\OneDrive - TU Eindhoven\Desktop\group-4\docs\Sep's picklebestanden\dict ID to feature matrix 2",'rb')) #must be a dictionary coupling ID's to matrices
 nr_pieces = 16 #will probably run into semantic errors if it exceeds 146, as the code is not equiped for that, let me know if you want to try 
+add_length = True
 
 ID_to_protein = pickle.load(open(r"C:\Users\20243625\OneDrive - TU Eindhoven\Desktop\group-4\docs\Sep's picklebestanden\dict ID to sequence",'rb')) 
 nr_features = len(ID_to_mat_old['P24941'][0]) #any featurevector for 1 aa would suffice
@@ -30,5 +31,13 @@ for ID in ID_to_protein.keys():
     average_in_piece = np.average(aas_in_piece,axis=0)
     vec_new = np.concatenate((vec_new,average_in_piece))
 
-    ID_to_vec_new[ID] = vec_new
-    ID_to_mat_new[ID] = vec_new.reshape(len(vec_new)//nr_features,nr_features)
+    #final processing
+    if add_length:
+        ID_to_vec_new[ID] = np.concatenate((vec_new,np.array([len(ID_to_protein[ID])])))
+        vec_extended = np.concatenate((vec_new,np.array([len(ID_to_protein[ID])]*nr_features))) #makes sure an entire extra row is added in the matrix containing just the lenghts
+        ID_to_mat_new[ID] = vec_extended.reshape(len(vec_extended)//nr_features,nr_features)
+        
+    else:
+        ID_to_vec_new[ID] = vec_new
+        ID_to_mat_new[ID] = vec_new.reshape(len(vec_new)//nr_features,nr_features)
+print(len(ID_to_mat_new["O60674"].flatten()))
