@@ -98,7 +98,7 @@ class Modeltrainer:
         }
 
         self.dict_of_data_processors = {
-            "scaler": [self.standard_scaling, self.minmax_scaling, self.no_scaling],
+            "scaler": [self.standard_scaling, self.minmax_scaling],
             "pca": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         }
     
@@ -112,7 +112,7 @@ class Modeltrainer:
         included in the representation-folder.
         """
         representation_folder = Path(folder_location)
-        return list(representation_folder)
+        return list(representation_folder.iterdir())
 
     def pickle_converter(self, pickle_file_path):
         """
@@ -121,14 +121,14 @@ class Modeltrainer:
         with pickle_file_path.open("rb") as pickle_file_handle:
             return pickle.load(pickle_file_handle)
 
-    def dicts_collector(self, map_location):
+    def dicts_collector(self, folder_location):
         """
         Returns a dictionary of dictionaries from both the molecule and
         protein representations, with key equal to file_path_name and item
         equal to the respective representation dicitionary which is 
         retreived using the pickle_converter function.
         """
-        pickle_file_paths = self.representation_gridsearch(rf"{map_location}")
+        pickle_file_paths = self.representation_gridsearch(rf"{folder_location}")
         dict_of_rep_dicts = {}
         for pickle_file_path in pickle_file_paths:
             file_path_name = pickle_file_path.stem #collects only the file name from the Path object
@@ -161,14 +161,14 @@ class Modeltrainer:
         Returns every possible combination between de representations,
         representation-combination methods, models and hyperparameters.
         """
-        combinations = {}
+        experiments = {}
 
         # 1. Load representations
         mol_rep_dict_of_dicts = self.dicts_collector(
-            map_location= "docs\mol representatie picklebestanden"
+            folder_location= "docs/mol representatie picklebestanden"
         )
         protein_rep_dict_of_dicts = self.dicts_collector(
-            map_location= "docs/Sep's picklebestanden"
+            folder_location= "docs/Sep's picklebestanden"
         )
 
         # 2. Loop over molecule & protein representations
@@ -312,6 +312,11 @@ class Modeltrainer:
     def train_test_split(self):
         pass
 ###################################################
+
+model = Modeltrainer()
+print(model.representation_gridsearch(folder_location= "docs/mol representatie picklebestanden"))
+
+
 
 #splitting the data in training and test sets
 # X_train, X_test, y_train, y_test = train_test_split(
