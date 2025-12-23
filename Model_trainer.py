@@ -36,6 +36,7 @@ class Modeltrainer:
     complete folder, named 'group-4', on Colab and then running the current
     program, named 'Model_trainer.py', while making use of the gpu's.
     """
+
     def __init__(self):
         self.dict_of_representation_combination_methods = {
             "feature concatenation": self.feature_concatenation,
@@ -161,8 +162,45 @@ class Modeltrainer:
         representation-combination methods, models and hyperparameters.
         """
         combinations = {}
-        mol_rep_dict_of_dicts = self.dicts_collector("docs\mol representatie picklebestanden")
-        protein_rep_dict_of_dicts = self.dicts_collector("docs/Sep's picklebestanden")
+
+        # 1. Load representations
+        mol_rep_dict_of_dicts = self.dicts_collector(
+            map_location= "docs\mol representatie picklebestanden"
+        )
+        protein_rep_dict_of_dicts = self.dicts_collector(
+            map_location= "docs/Sep's picklebestanden"
+        )
+
+        # 2. Loop over molecule & protein representations
+        for (mol_rep_name, mol_rep_dict), (prot_rep_name, prot_rep_dict) in product(
+            mol_rep_dict_of_dicts.items(),
+            protein_rep_dict_of_dicts.items()
+        ):
+            # 3. Loop over representation-combination methods
+            for comb_name, comb_fn in self.dict_of_representation_combination_methods.items():
+
+                # 4. Loop over models
+                for model_name in self.dict_of_model_builders.keys():
+
+                    # 5. Loop over hyperparameter combinations (generator!)
+                    for hyperparams in self.hyperparam_generator(model_name):
+
+                    
+                        experiments.append({
+                            "molecule_representation_name": mol_rep_name,
+                            "molecule_representation_dict": mol_rep_dict,
+
+                            "protein_representation_name": prot_rep_name,
+                            "protein_representation_dict": prot_rep_dict,
+
+                            "combination_method_name": comb_name,
+                            "combination_method_fn": comb_fn,
+
+                            "model_name": model_name,
+                            "hyperparameters": hyperparams
+                        })
+
+        return experiments
         
 ###############    Model builders   ###############
     def build_ridge(self, hyperparams):
