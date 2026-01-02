@@ -1,7 +1,7 @@
 from pathlib import Path
 import pickle
 import numpy as np
-pathlist = Path(r"C:\Users\20243625\OneDrive - TU Eindhoven\Desktop\group-4\docs\Sep's picklebestanden\protein dicts to use in gridsearch").glob('*')
+pathlist = Path(r"C:\Users\20243625\OneDrive - TU Eindhoven\Desktop\group-4\docs\Sep's picklebestanden\sources for dicts to use in gridsearch").glob('*')
 
 #these two lines can be changed to experiment with different features and hyperparameters
 ID_to_protein = pickle.load(open(r"C:\Users\20243625\OneDrive - TU Eindhoven\Desktop\group-4\docs\Sep's picklebestanden\dict ID to sequence",'rb')) 
@@ -43,5 +43,5 @@ for path in pathlist:
             else:
                 protein_features_dict[ID] = vec_new
                 # ID_to_mat_new[ID] = vec_new.reshape(len(vec_new)//nr_features,nr_features)
-                
-        pickle.dump(protein_features_dict, open(f"{path} in {nr_pieces} pieces",'wb'))
+
+        pickle.dump(protein_features_dict, open(f"{path} in {nr_pieces} pieces".replace('matrix','vector'),'wb'))
