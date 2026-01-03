@@ -428,7 +428,7 @@ class Modeltrainer:
 
 gridsearch = Modeltrainer()
 data = gridsearch.data_loader("data/train.csv")
-gridsearch.experiment_tester("docs/model_gridsearch.csv", data, debug_fraction_selector= 10)
+gridsearch.experiment_tester("docs/model_gridsearch.csv", data, debug_fraction_selector= 100)
 
 gridsearch_csv = pd.read_csv("docs/model_gridsearch.csv")
 print(gridsearch_csv["error"].unique())
