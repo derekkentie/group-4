@@ -9,8 +9,6 @@ from sklearn.neural_network import MLPRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.ensemble import HistGradientBoostingRegressor
 
-<<<<<<< Updated upstream
-=======
 #added by Sep:
 """This code is added to make it easier to select specific physicochemical properties to use to make the model. 
 It does so by first creating a dictionary coupling every aminoacid to a subsequent featurevector, after which new dictionaries are made coupling IDs to featurevectors or -matrices,
@@ -69,7 +67,6 @@ for ID in ID_to_featurevec.keys():
 print(dict_ID_to_propertymatrix_padded_with_nans['P31749'][20])
 #End of: added by Sep
 
->>>>>>> Stashed changes
 #selecting the preferred dicitionaries
 molecule_features_dict_train = pickle.load(open(r"docs\mol representatie picklebestanden\train_molecule_descriptor_representation.pkl",'rb'))
 molecule_features_dict_test = pickle.load(open(r"docs\mol representatie picklebestanden\test_molecule_descriptor_representation.pkl",'rb'))
