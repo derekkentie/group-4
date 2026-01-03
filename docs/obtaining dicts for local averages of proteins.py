@@ -41,3 +41,57 @@ for ID in ID_to_protein.keys():
         ID_to_vec_new[ID] = vec_new
         ID_to_mat_new[ID] = vec_new.reshape(len(vec_new)//nr_features,nr_features)
 print(len(ID_to_mat_new["O60674"].flatten()))
+
+# #back-up
+# ID_to_protein = pickle.load(open(r"C:\Users\20243625\OneDrive - TU Eindhoven\Desktop\group-4\docs\Sep's picklebestanden\dict ID to sequence",'rb'))
+# aa_to_featurevec_unfilter = pickle.load(open(r"C:\Users\20243625\OneDrive - TU Eindhoven\Desktop\group-4\docs\Sep's picklebestanden\dict aminoacid to property vector 2",'rb')) 
+
+# dict_to_concatenate =None
+# #Above PAM250 is selected, can be exchanged with BLOSUM62, make sure it is a dictionary coupling aminoacids to vectors, not ID's to vectors, can be set to None if you only want to use physicochemical properties
+
+
+# features_used = [0, 1, 2, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24] #contains indices of physicochemical properties kept, feel free to experiment by changing what it contains, do not exceed 24 as there are no properties with a higher index
+# #FYI: these are the highly correlating pairs (abs(R) > 0.9): [(3, 2), (5, 2), (5, 3), (17, 15), (21, 2), (21, 3)]
+# aa_to_featurevec_filtered = dict()
+
+# for aa in aa_to_featurevec_unfilter.keys(): #creating dictionary coupling aminoacids to featurevectors
+#     value = aa_to_featurevec_unfilter[aa]
+#     features_kept = []
+#     for feature in features_used:
+#         features_kept.append(value[feature])
+#     if dict_to_concatenate is not None:
+#         features_kept = np.concatenate([features_kept,dict_to_concatenate[aa]])
+#     aa_to_featurevec_filtered[aa] = features_kept
+
+# #creating dictionaries coupling IDs to featurevectors or -matrices   
+# ID_to_featurevec = dict()
+# ID_to_feature_mat = dict()
+# ID_codes = ID_to_protein.keys()
+
+# for ID in ID_codes:
+#     protein = ID_to_protein[ID]
+#     vec = np.array([])
+#     for aa in protein:
+#         vec = np.concatenate((vec,aa_to_featurevec_filtered[aa]))
+
+#     ID_to_featurevec[ID] = vec
+#     ID_to_feature_mat[ID] = vec.reshape((len(vec)//len(aa_to_featurevec_filtered['A']),len(aa_to_featurevec_filtered['A'])))
+
+# #creating dictionaries coupling IDs to featurevectors or -matrices padded with nans
+# lengths = [len(value) for value in ID_to_featurevec.values()]
+# max_length = max(lengths)
+# dict_ID_to_propertyvector_padded_with_nans = dict()
+# dict_ID_to_propertymatrix_padded_with_nans = dict()
+
+
+# for ID in ID_to_featurevec.keys():
+#     value = ID_to_featurevec[ID]
+#     nr_nans = max_length - len(value)
+#     nan_array = (np.array([float('nan')]*nr_nans))
+#     vec = np.concatenate((value,nan_array))
+#     dict_ID_to_propertyvector_padded_with_nans[ID] = vec
+#     dict_ID_to_propertymatrix_padded_with_nans[ID] = vec.reshape((len(vec)//len(aa_to_featurevec_filtered['A']),len(aa_to_featurevec_filtered['A'])))
+
+# print(dict_ID_to_propertymatrix_padded_with_nans['P31749'][20])
+# #End of: added by Sep
+print(len(ID_to_mat_new["O60674"].flatten()))
