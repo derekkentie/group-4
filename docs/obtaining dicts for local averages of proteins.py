@@ -94,3 +94,4 @@ print(len(ID_to_mat_new["O60674"].flatten()))
 
 # print(dict_ID_to_propertymatrix_padded_with_nans['P31749'][20])
 # #End of: added by Sep
+print(len(ID_to_mat_new["O60674"].flatten()))
