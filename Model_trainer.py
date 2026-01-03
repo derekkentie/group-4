@@ -224,17 +224,16 @@ print("Train score:", model.score(X_train, y_train))
 print("Test score:", model.score(X_test, y_test))
 
 #FOR MAKING THE ACTUAL PREDICTIONS
-"""
-model.fit(X, y)
-y_predict = model.predict(X_predict)
-if len(y_predict) != 34626:
-    raise IndexError(
-        f"y_predict does not contain the same amount of samples as the test.csv file, but has {len(y_predict)} samles."
-    )
 
-submission = pd.DataFrame({
-    "ID": test_df["ID"],
-    "affinity_score": y_predict
-})
-submission.to_csv("data/submission1.csv", index=False)
-"""
+# model.fit(X, y)
+# y_predict = model.predict(X_predict)
+# if len(y_predict) != 34626:
+#     raise IndexError(
+#         f"y_predict does not contain the same amount of samples as the test.csv file, but has {len(y_predict)} samles."
+#     )
+
+# submission = pd.DataFrame({
+#     "ID": test_df["ID"],
+#     "affinity_score": y_predict
+# })
+# submission.to_csv("data/submission2.csv", index=False)
