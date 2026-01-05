@@ -21,7 +21,7 @@ from sklearn.neighbors import KNeighborsRegressor
 from sklearn.svm import SVR
 
 
-class Modeltrainer:
+class gridsearch:
     """
     This program is made to perform a gigantic gridsearch, not ontly on model-
     specific hyperparameters, but on all the different possible combinations
@@ -177,7 +177,7 @@ class Modeltrainer:
             folder_location= "docs/mol representatie picklebestanden"
         )
         protein_rep_dict_of_dicts = self.dicts_collector(
-            folder_location= "docs/Sep's picklebestanden"
+            folder_location= "docs/Sep's picklebestanden/protein dicts to use in gridsearch"
         )
 
         # 2. Loop over molecule & protein representations
@@ -242,21 +242,21 @@ class Modeltrainer:
     def experiment_tester(self, output_csv_path, data, debug_fraction_selector = 1):
         experiments = self.experiment_maker()
         self.init_results_csv(output_csv_path)
-        X = []
+        results = []
         for i, experiment in enumerate(experiments, start=1):
 
             row = {
-                "mol_representation": experiment["molecule_representation_name"],
-                "protein_representation": experiment["protein_representation_name"],
-                "combination_method": experiment["combination_method_name"],
-                "model": experiment["model_name"],
-                "hyperparams": str(experiment["hyperparameters"]),
-                "seed": experiment.get("seed", None),
-                "train_score": "None",
-                "train_accuracy": "None",
-                "test_score": "None",
-                "test_accuracy": "None",
-                "error": "None"
+                "mol_representation":       experiment["molecule_representation_name"],
+                "protein_representation":   experiment["protein_representation_name"],
+                "combination_method":       experiment["combination_method_name"],
+                "model":                    experiment["model_name"],
+                "hyperparams":              str(experiment["hyperparameters"]),
+                "seed":                     experiment.get("seed", None),
+                "train_score":              "None",
+                "train_accuracy":           "None",
+                "test_score":               "None",
+                "test_accuracy":            "None",
+                "error":                    "None"
             }
             if i/debug_fraction_selector == int(i/debug_fraction_selector):
                 try:
@@ -300,9 +300,9 @@ class Modeltrainer:
                 index=False
                 )
 
-                X.append(row)
+                results.append(row)
 
-        return X
+        return results
 
         
 ###############    Model builders   ###############
@@ -369,6 +369,8 @@ class Modeltrainer:
             #feature concatenation
 
             #making sure that both representations are in list form
+            
+
             if isinstance(molecule_feature_dict[smiles], np.ndarray):
                 molecule_feature_dict[smiles] = molecule_feature_dict[smiles].tolist()
             if isinstance(protein_feature_dict[protein], np.ndarray):
@@ -426,9 +428,9 @@ class Modeltrainer:
         return np.mean(y_true == y_pred)
 
 
-gridsearch = Modeltrainer()
+gridsearch = gridsearch()
 data = gridsearch.data_loader("data/train.csv")
-gridsearch.experiment_tester("docs/model_gridsearch.csv", data, debug_fraction_selector= 100)
+results = gridsearch.experiment_tester("docs/model_gridsearch.csv", data, debug_fraction_selector= 10000)
 
-gridsearch_csv = pd.read_csv("docs/model_gridsearch.csv")
-print(gridsearch_csv["error"].unique())
+print(len(results))
+print(results[6])
