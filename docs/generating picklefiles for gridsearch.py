@@ -6,11 +6,12 @@ pathlist = Path(r"C:\Users\20243625\OneDrive - TU Eindhoven\Desktop\group-4\docs
 #these two lines can be changed to experiment with different features and hyperparameters
 ID_to_protein = pickle.load(open(r"C:\Users\20243625\OneDrive - TU Eindhoven\Desktop\group-4\docs\Sep's picklebestanden\dict ID to sequence",'rb')) 
 add_length = True
-nr_pieces_to_test = [5,25,146]
+nr_pieces_to_test = [1]
 for path in pathlist:
     ID_to_mat_old = pickle.load(open(path,'rb')) #must be a dictionary coupling ID's to matrices
     for nr_pieces  in nr_pieces_to_test: #will probably run into semantic errors if it exceeds 146, as the code is not equiped for that, let me know if you want to try 
-        nr_features = len(ID_to_mat_old['P24941'][0]) #any featurevector for 1 aa would suffice
+        # print('array I hope',ID_to_mat_old['P24941'].tolist()[0])
+        nr_features = len((ID_to_mat_old['P24941'].tolist()[0])) #any featurevector for 1 aa would suffice
         protein_features_dict = dict()
         # ID_to_mat_new = dict()
 
@@ -44,4 +45,4 @@ for path in pathlist:
                 protein_features_dict[ID] = vec_new
                 # ID_to_mat_new[ID] = vec_new.reshape(len(vec_new)//nr_features,nr_features)
 
-        pickle.dump(protein_features_dict, open(f"{path} in {nr_pieces} pieces".replace('matrix','vector'),'wb'))
+        pickle.dump(protein_features_dict, open(rf"{path} in {nr_pieces} pieces".replace('matrix','vector').replace('sources for ','protein '),'wb'))
