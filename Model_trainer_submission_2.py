@@ -163,11 +163,11 @@ print("Test score:", model.score(X_test, y_test))
 
 #FOR MAKING THE ACTUAL PREDICTIONS
 
-# model.fit(X, y)
-# y_predict = model.predict(X_predict)
+model.fit(X, y)
+y_predict = model.predict(X_predict)
 
-# submission = pd.DataFrame({
-#     "ID": test_df["ID"],
-#     "affinity_score": y_predict
-# })
-# submission.to_csv("data/submission2.csv", index=False)
+submission = pd.DataFrame({
+    "ID": test_df["ID"],
+    "affinity_score": y_predict
+})
+submission.to_csv("data/submission2.csv", index=False)
