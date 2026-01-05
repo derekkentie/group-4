@@ -11,8 +11,6 @@ from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
 
 #model libraries
-from sklearn.linear_model import Ridge
-from sklearn.linear_model import Lasso
 from sklearn.neural_network import MLPRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.ensemble import HistGradientBoostingRegressor
@@ -49,8 +47,6 @@ class gridsearch:
             }
         
         self.dict_of_model_builders = {
-            "Ridge": self.build_ridge,
-            "Lasso": self.build_lasso,
             "Random Forest": self.build_random_forest,
             "Gradient Boosting Regressor": self.build_gbr,
             "Hist Gradient Boosting Regressor": self.build_hgbr,
@@ -60,12 +56,6 @@ class gridsearch:
         }
 
         self.dict_of_model_hyperparams = {
-            "Ridge": {
-                "alpha": [0.1, 1.0, 10.0, 100.0]
-            },
-            "Lasso": {
-                "alpha": [1e-4, 1e-3, 1e-2]
-            },
             "Random Forest": {
                 "n_estimators": [200, 500],
                 "max_depth": [None, 20],
@@ -191,14 +181,16 @@ class gridsearch:
                 # 4. Loop over models
                 for model_name in self.dict_of_model_builders.keys():
 
-                    # 5. Loop over hyperparameter combinations (generator!)
+                    # 5. Loop over hyperparameter combinations
                     for hyperparams in self.hyperparam_generator(model_name):
                         
+                        # 6. Loop over scaling types
                         for scale_type in self.dict_of_data_processors["scaler"]:
 
+                            # 7. Loop over pca range from None to 4 PC's
                             for pca in self.dict_of_data_processors["pca"]:
 
-                                # 6. appending every possible combination as a dictionary in the list experiments
+                                # 7. Appending every possible combination as a dictionary in the list experiments
                                 experiments.append({
                                     "molecule_representation_name": mol_rep_name,
                                     "molecule_representation_dict": mol_rep_dict,
@@ -306,12 +298,6 @@ class gridsearch:
 
         
 ###############    Model builders   ###############
-    def build_ridge(self, hyperparams):
-        return Ridge(**hyperparams)
-    
-    def build_lasso(self, hyperparams):
-        return Lasso(**hyperparams)    
-    
     def build_random_forest(self, hyperparams):
         return RandomForestRegressor(**hyperparams)
     
