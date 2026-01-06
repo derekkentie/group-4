@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 import pickle
-import random
 import statistics
 from typing import Literal
 from sklearn.preprocessing import StandardScaler
@@ -356,7 +355,8 @@ class MoleculeRepresentationGenerator:
 
     def unique_smiles(self, data):
         return data["molecule_SMILES"].unique()
-    
+
+
 mol_feature_model = MoleculeRepresentationGenerator(rep_type= 'descriptor',scale_type= 'None')
 data = mol_feature_model.data_loader(file= r"data\train.csv")
 smiles = mol_feature_model.unique_smiles(data)

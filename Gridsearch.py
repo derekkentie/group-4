@@ -3,6 +3,7 @@ import pandas as pd
 import pickle #to un-encode the dictionaries
 from pathlib import Path #used for looping through representation dictionaries
 from itertools import product #used for gridsearch on hyperparameters
+import itertools
 
 #data processing libraries
 from sklearn.preprocessing import StandardScaler
@@ -414,9 +415,10 @@ class gridsearch:
         return np.mean(y_true == y_pred)
 
 
-gridsearch = gridsearch()
-data = gridsearch.data_loader("data/train.csv")
-results = gridsearch.experiment_tester("docs/model_gridsearch.csv", data, debug_fraction_selector= 10000)
+# gridsearch = gridsearch()
+# data = gridsearch.data_loader("data/train.csv")
+# results = gridsearch.experiment_tester("docs/model_gridsearch.csv", data, debug_fraction_selector= 10000)
 
-print(len(results))
-print(results[6])
+# print(len(results))
+# print(results[6])
+print(itertools.__version__)
