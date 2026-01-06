@@ -68,7 +68,7 @@ for _, row in test_df.iterrows():
     if isinstance(protein_features_dict[protein], np.ndarray):
         protein_features_dict[protein] = protein_features_dict[protein].tolist()
     combined = molecule_features_dict_test[smiles] + protein_features_dict[protein]
-    del combined[593]
+    del combined[593] #This is a somewhat dirty solution to an unfound semantic error earlier. As I discovered that removing exactly at this index makes the dictionaries match and the code work.
 
     #data seperation
     X_predict.append(combined)
