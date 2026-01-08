@@ -362,9 +362,7 @@ data = mol_feature_model.data_loader(file= r"data\train.csv")
 smiles = mol_feature_model.unique_smiles(data)
 mol_feature_model.datasize = len(smiles)
 mols = mol_feature_model.smiles_to_mols(smiles)
-for mol, smiles in zip(smiles, mols):
-    print(mol, "==", smiles)
-#descriptor_rep = mol_feature_model.descriptor_rep(mols)
+descriptor_rep = mol_feature_model.descriptor_rep(mols)
 
 # molecule_features = mol_feature_model.get_rep_dict('data/train.csv')
 # mol_feature_model.pickle_export(molecule_features, dataset= 'train')
