@@ -1,0 +1,160 @@
+eerste gridsearch:
+protein: BLOSUM62 vector in 146 pieces, molecule: combined
+abs_loss 2.9011179845289137
+protein: BLOSUM62 vector in 146 pieces, molecule: descriptor
+abs_loss 3.0432322173215116
+protein: BLOSUM62 vector in 146 pieces, molecule: fingerprint
+abs_loss 2.9374720896499626
+protein: BLOSUM62 vector in 25 pieces, molecule: combined
+abs_loss 2.840040453257743
+protein: BLOSUM62 vector in 25 pieces, molecule: descriptor
+abs_loss 2.9877318653438314
+protein: BLOSUM62 vector in 25 pieces, molecule: fingerprint
+abs_loss 2.886466770471716
+protein: BLOSUM62 vector in 5 pieces, molecule: combined (best score)
+abs_loss 2.7641662251913197
+protein: BLOSUM62 vector in 5 pieces, molecule: descriptor
+abs_loss 2.9041405328335124
+protein: BLOSUM62 vector in 5 pieces, molecule: fingerprint
+abs_loss 2.8502637899459
+protein: feature vector 2 in 146 pieces, molecule: combined
+abs_loss 2.8952552225852557
+protein: feature vector 2 in 146 pieces, molecule: descriptor
+abs_loss 3.0542966352278174
+protein: feature vector 2 in 146 pieces, molecule: fingerprint
+abs_loss 2.956541770714819
+protein: feature vector 2 in 25 pieces, molecule: combined
+abs_loss 2.854505178583582
+protein: feature vector 2 in 25 pieces, molecule: descriptor
+abs_loss 2.9792626233748543
+protein: feature vector 2 in 25 pieces, molecule: fingerprint
+abs_loss 2.9009215829419364
+protein: feature vector 2 in 5 pieces, molecule: combined (third best score)
+abs_loss 2.7923912653033423
+protein: feature vector 2 in 5 pieces, molecule: descriptor
+abs_loss 2.89653196774183
+protein: feature vector 2 in 5 pieces, molecule: fingerprint
+abs_loss 2.8216449253835334
+protein: feature vector in one-hot in 146 pieces, molecule: combined
+abs_loss 2.8848561287928134
+protein: feature vector in one-hot in 146 pieces, molecule: descriptor
+abs_loss 3.0619975639130677
+protein: feature vector in one-hot in 146 pieces, molecule: fingerprint
+abs_loss 2.9379964813248134
+protein: feature vector in one-hot in 25 pieces, molecule: combined
+abs_loss 2.8459766487256526
+protein: feature vector in one-hot in 25 pieces, molecule: descriptor
+abs_loss 2.98470296083446
+protein: feature vector in one-hot in 25 pieces, molecule: fingerprint
+abs_loss 2.8777024278712893
+protein: feature vector in one-hot in 5 pieces, molecule: combined (fourth best score)
+abs_loss 2.793780330604094
+protein: feature vector in one-hot in 5 pieces, molecule: descriptor
+abs_loss 2.8960539426544676
+protein: feature vector in one-hot in 5 pieces, molecule: fingerprint
+abs_loss 2.8459815188113207
+protein: PAM250 vector in 146 pieces, molecule: combined
+abs_loss 2.898720864896227
+protein: PAM250 vector in 146 pieces, molecule: descriptor
+abs_loss 3.0546849166642356
+protein: PAM250 vector in 146 pieces, molecule: fingerprint
+abs_loss 2.9427112545419756
+protein: PAM250 vector in 25 pieces, molecule: combined
+abs_loss 2.837857998580276
+protein: PAM250 vector in 25 pieces, molecule: descriptor
+abs_loss 2.9815172775163474
+protein: PAM250 vector in 25 pieces, molecule: fingerprint
+abs_loss 2.895700526318347
+protein: PAM250 vector in 5 pieces, molecule: combined (second best score)
+abs_loss 2.76861248626467
+protein: PAM250 vector in 5 pieces, molecule: descriptor
+abs_loss 2.890837902943492
+protein: PAM250 vector in 5 pieces, molecule: fingerprint
+abs_loss 2.831733499129689
+protein: physicochemical 2 + BLOSUM62 vector in 146 pieces, molecule: combined
+abs_loss 2.9396247929666712
+protein: physicochemical 2 + BLOSUM62 vector in 146 pieces, molecule: descriptor
+abs_loss 3.055248015600445
+protein: physicochemical 2 + BLOSUM62 vector in 146 pieces, molecule: fingerprint
+abs_loss 2.9768723265945134
+protein: physicochemical 2 + BLOSUM62 vector in 25 pieces, molecule: combined
+abs_loss 2.8636788364110175
+protein: physicochemical 2 + BLOSUM62 vector in 25 pieces, molecule: descriptor
+abs_loss 3.0137590399016267
+protein: physicochemical 2 + BLOSUM62 vector in 25 pieces, molecule: fingerprint
+abs_loss 2.901415414118134
+protein: physicochemical 2 + BLOSUM62 vector in 5 pieces, molecule: combined
+abs_loss 2.8012705339517865
+protein: physicochemical 2 + BLOSUM62 vector in 5 pieces, molecule: descriptor
+abs_loss 2.9319799352373157
+protein: physicochemical 2 + BLOSUM62 vector in 5 pieces, molecule: fingerprint
+abs_loss 2.853327275202504
+protein: physicochemical 2 + PAM250 vector in 146 pieces, molecule: combined
+abs_loss 2.9429854000343587
+protein: physicochemical 2 + PAM250 vector in 146 pieces, molecule: descriptor
+abs_loss 3.0442223227048624
+protein: physicochemical 2 + PAM250 vector in 146 pieces, molecule: fingerprint
+abs_loss 2.976727704036484
+protein: physicochemical 2 + PAM250 vector in 25 pieces, molecule: combined
+abs_loss 2.863075322840999
+protein: physicochemical 2 + PAM250 vector in 25 pieces, molecule: descriptor
+abs_loss 3.0051276192745147
+protein: physicochemical 2 + PAM250 vector in 25 pieces, molecule: fingerprint
+abs_loss 2.913953349475382
+protein: physicochemical 2 + PAM250 vector in 5 pieces, molecule: combined
+abs_loss 2.8032973795099676
+protein: physicochemical 2 + PAM250 vector in 5 pieces, molecule: descriptor
+abs_loss 2.9170543302345773
+protein: physicochemical 2 + PAM250 vector in 5 pieces, molecule: fingerprint
+abs_loss 2.8567111297490193
+
+tweede gridsearch:
+
+protein: BLOSUM62 vector in 10 pieces, molecule: combined
+abs_loss 2.827148049826422
+protein: BLOSUM62 vector in 2 pieces, molecule: combined
+abs_loss 2.7248949389973105
+protein: BLOSUM62 vector in 3 pieces, molecule: combined (third best score)
+abs_loss 2.7147759103403097
+protein: BLOSUM62 vector in 7 pieces, molecule: combined
+abs_loss 2.7797186399350413
+protein: feature vector 2 in 10 pieces, molecule: combined
+abs_loss 2.796727010949365
+protein: feature vector 2 in 2 pieces, molecule: combined (best score)
+abs_loss 2.693235040646847
+protein: feature vector 2 in 3 pieces, molecule: combined
+abs_loss 2.7358298897770243
+protein: feature vector 2 in 7 pieces, molecule: combined
+abs_loss 2.7944785396630896
+protein: feature vector in one-hot in 10 pieces, molecule: combined
+abs_loss 2.807490921474435
+protein: feature vector in one-hot in 2 pieces, molecule: combined (fourth best score)
+abs_loss 2.716072929247253
+protein: feature vector in one-hot in 3 pieces, molecule: combined
+abs_loss 2.740116983105949
+protein: feature vector in one-hot in 7 pieces, molecule: combined
+abs_loss 2.7880522529990803
+protein: PAM250 vector in 10 pieces, molecule: combined
+abs_loss 2.794259610774154
+protein: PAM250 vector in 2 pieces, molecule: combined
+abs_loss 2.734000891297228
+protein: PAM250 vector in 3 pieces, molecule: combined (second best score)
+abs_loss 2.711401051178075
+protein: PAM250 vector in 7 pieces, molecule: combined
+abs_loss 2.7822326368427692
+protein: physicochemical 2 + BLOSUM62 vector in 10 pieces, molecule: combined
+abs_loss 2.833484976953818
+protein: physicochemical 2 + BLOSUM62 vector in 2 pieces, molecule: combined
+abs_loss 2.740511121321441
+protein: physicochemical 2 + BLOSUM62 vector in 3 pieces, molecule: combined
+abs_loss 2.775688304888788
+protein: physicochemical 2 + BLOSUM62 vector in 7 pieces, molecule: combined
+abs_loss 2.821271820696828
+protein: physicochemical 2 + PAM250 vector in 10 pieces, molecule: combined
+abs_loss 2.8285762279951103
+protein: physicochemical 2 + PAM250 vector in 2 pieces, molecule: combined
+abs_loss 2.7453533193305883
+protein: physicochemical 2 + PAM250 vector in 3 pieces, molecule: combined
+abs_loss 2.753726318348452
+protein: physicochemical 2 + PAM250 vector in 7 pieces, molecule: combined
+abs_loss 2.8162865843519342
