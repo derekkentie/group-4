@@ -421,4 +421,3 @@ class gridsearch:
 
 # print(len(results))
 # print(results[6])
-print(itertools.__version__)
