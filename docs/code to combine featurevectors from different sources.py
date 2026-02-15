@@ -3,7 +3,7 @@ import numpy as np
 import pickle
 
 nr_features = 45 #!!!NEEDS TO BE ADJUSTED MANUALLY, IS THE TOTAL AMOUNT OF FEATURES FOR EACH AMINO ACID!!!
-ID_to_protein = pickle.load(open('dict ID to sequence','rb'))
+ID_to_protein = pickle.load(open('dict ID to sequence','rb')) 
 
 featurevec1 = pickle.load(open('dict aminoacid to property vector 2','rb')) #<--- first dictionary from aa to featurevector goes here
 featurevec2 = pickle.load(open('dict aa to PAM250 substitution vector (alfabetically)','rb')) #<--- second goes here
