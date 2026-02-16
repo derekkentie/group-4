@@ -16,8 +16,8 @@ test_df = pd.read_csv(r"data\test.csv")
 
 X = []
 y = []
-
 #feature concatenation to combine each ligand-protein pair
+
 for _, row in train_df.iterrows():
     smiles = row["molecule_SMILES"]
     protein = row["UniProt_ID"]
@@ -69,10 +69,20 @@ for _, row in test_df.iterrows():
     if isinstance(protein_features_dict[protein], np.ndarray):
         protein_features_dict[protein] = protein_features_dict[protein].tolist()
     combined = molecule_features_dict_test[smiles] + protein_features_dict[protein]
-
+    
     #data seperation
     X_predict.append(combined)
 X_predict = np.array(X_predict, dtype=float)
+
+"""
+After investigation we found that the molecule feature dictionaries from the
+train and test set were not equal. It appeared that one feature was filtered
+out in the train dictionary but not in the test dictionary (i.e. feature 593).
+
+Below we prevent this row from being added to X_predict, so that this mismatch
+won't obstruct the scaling step.
+"""
+X_predict = np.delete(X_predict, 593, axis=1)
 
 
 #splitting the data in training and test sets
@@ -85,16 +95,20 @@ X_train, X_test, y_train, y_test = train_test_split(
 scaler = MinMaxScaler()
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
-print('len X',len(X))
 X = scaler.fit_transform(X)
 X_predict = scaler.transform(X_predict)
-print("minmax scaling complete")
 
 #setting randomforest parameters
 model = RandomForestRegressor(n_estimators=500,
                               max_features='sqrt',
                               max_depth = 400
 )
+
+#training scores
+model.fit(X_train, y_train)
+print("Train score:", model.score(X_train, y_train))
+print("Test score:", model.score(X_test, y_test))
+print('abs_loss',np.average(abs(model.predict(X_test)-y_test)))
 
 #making the predictions
 model.fit(X, y)
