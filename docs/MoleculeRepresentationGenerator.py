@@ -358,11 +358,5 @@ class MoleculeRepresentationGenerator:
 
 
 mol_feature_model = MoleculeRepresentationGenerator(rep_type= 'descriptor',scale_type= 'None')
-data = mol_feature_model.data_loader(file= r"data\train.csv")
-smiles = mol_feature_model.unique_smiles(data)
-mol_feature_model.datasize = len(smiles)
-mols = mol_feature_model.smiles_to_mols(smiles)
-descriptor_rep = mol_feature_model.descriptor_rep(mols)
-
-# molecule_features = mol_feature_model.get_rep_dict('data/train.csv')
-# mol_feature_model.pickle_export(molecule_features, dataset= 'train')
+molecule_features = mol_feature_model.get_rep_dict(r'data\train.csv')
+mol_feature_model.pickle_export(molecule_features, dataset= 'train')

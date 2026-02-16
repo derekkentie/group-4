@@ -80,75 +80,11 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 print("data splitting complete")
 
-#BELOW ARE OPTIONS FOR SCALING AND PCA, REMOVE DOCSTRINGS FOR
-#THE PREFERRED OPTION(S)
-
-#choose one of the following scaling option, or leave them out if preferred
-"""
-scaler = StandardScaler()
-X_train = scaler.fit_transform(X_train)
-X_test = scaler.transform(X_test)
-X_predict = scaler.transform(X_predict)
-print("standard scaling complete")
-"""
-
 scaler = MinMaxScaler()
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 X = scaler.fit_transform(X)
-#X_predict = scaler.transform(X_predict)
 print("minmax scaling complete")
-
-#apply PCA if preferred
-r"""
-ValueError: Input X contains NaN.
-PCA does not accept missing values encoded as NaN natively. 
-For supervised learning, you might want to consider 
-sklearn.ensemble.HistGradientBoostingClassifier and Regressor 
-which accept missing values encoded as NaNs natively. 
-Alternatively, it is possible to preprocess the data, 
-for instance by using an imputer transformer in a pipeline 
-or drop samples with missing values. 
-See https://scikit-learn.org/stable/modules/impute.html 
-You can find a list of all estimators that handle NaN values 
-at the following page: 
-https://scikit-learn.org/stable/modules/impute.html#estimators-that-handle-nan-values
-"""
-"""
-pca = PCA(n_components=8)
-X_train = pca.fit_transform(X_train)
-X_test  = pca.transform(X_test)
-print("PCA application complete")
-"""
-#NOW APPLY YOUR PREFERRED MODEL TYPE
-r"""
-ValueError: Input X contains NaN.
-MLPRegressor does not accept missing values encoded as NaN natively. 
-For supervised learning, you might want to consider 
-sklearn.ensemble.HistGradientBoostingClassifier and Regressor 
-which accept missing values encoded as NaNs natively. 
-Alternatively, it is possible to preprocess the data, 
-for instance by using an imputer transformer in a pipeline 
-or drop samples with missing values. 
-See https://scikit-learn.org/stable/modules/impute.html 
-You can find a list of all estimators that handle NaN values 
-at the following page: 
-https://scikit-learn.org/stable/modules/impute.html#estimators-that-handle-nan-values
-"""
-
-"""
-model = MLPRegressor(
-    hidden_layer_sizes=( 16, 8),
-    activation='logistic',
-    learning_rate='adaptive',
-    max_iter=400,
-    random_state=42
-)
-"""
-
-# model = RandomForestRegressor(
-#     criterion= 'absolute_error'
-# )
 
 
 model = HistGradientBoostingRegressor(
